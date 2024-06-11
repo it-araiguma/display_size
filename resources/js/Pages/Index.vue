@@ -9,8 +9,6 @@ const roundedInches = ref(0);
 const floorInches = ref(0);
 
 onMounted(() => {
-    // window.addEventListener('resize', updateDimensions);
-    // updateDimensions();
     const dpiCalculator = document.getElementById('dpi-calculator');
     if (dpiCalculator) {
         dpi.value = dpiCalculator.offsetWidth;
@@ -22,7 +20,6 @@ onMounted(() => {
     screenInches.value = calculateScreenInches(screenWidth.value, screenHeight.value, dpi.value);
     roundedInches.value = Math.round(screenInches.value);
     floorInches.value = truncateToDecimal(screenInches.value, 2);
-    console.log(floorInches.value);
 });
 
 const calculateScreenInches = (width: number, height: number, dpi: number) => {
