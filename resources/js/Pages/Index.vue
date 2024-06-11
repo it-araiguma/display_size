@@ -48,7 +48,7 @@ const truncateToDecimal = (value: number, decimals: number) => {
 
         <q-page-container class="container q-ma-lg">
             <div id="dpi-calculator" style="width:1in; height:1in; position:absolute; left:-100%; top:-100%;"></div>
-            <div class="q-mt-lg">
+            <div class="q-ma-lg">
                 <p class="text-h3">現在の画面サイズ</p>
                 <p class="text-h6">幅: {{ screenWidth }} px</p>
                 <p class="text-h6">高さ: {{ screenHeight }} px</p>
