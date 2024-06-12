@@ -7,6 +7,9 @@ use Inertia\Inertia;
 
 class IndexController extends Controller
 {
+    /**
+     * @return \Inertia\Response
+     */
     public function index()
     {
         return Inertia::render('Index');
