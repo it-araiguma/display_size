@@ -41,7 +41,7 @@ const truncateToDecimal = (value: number, decimals: number) => {
         <q-header bordered class="bg-primary text-white">
             <q-toolbar>
                 <q-toolbar-title>
-                    画面サイズ確認
+                    <q-icon class="q-mb-xs" name="monitor" /> 画面サイズ確認
                 </q-toolbar-title>
             </q-toolbar>
         </q-header>
@@ -49,11 +49,21 @@ const truncateToDecimal = (value: number, decimals: number) => {
         <q-page-container class="container q-ma-lg">
             <div id="dpi-calculator" style="width:1in; height:1in; position:absolute; left:-100%; top:-100%;"></div>
             <div class="q-ma-lg">
-                <p class="text-h3">現在の画面サイズ</p>
-                <p class="text-h6">幅: {{ screenWidth }} px</p>
-                <p class="text-h6">高さ: {{ screenHeight }} px</p>
-                <p class="text-h6">DPI: {{ dpi }}</p>
-                <p class="text-h6">サイズ: 約{{ roundedInches }}({{ floorInches }})インチ</p>
+                <p class="text-h4 text-grey-7">
+                    現在の画面サイズ
+                </p>
+                <p class="text-h6 text-grey-7">
+                    <q-icon class="q-mb-xs" name="sync_alt" /> 幅 : {{ screenWidth }} px
+                </p>
+                <p class="text-h6 text-grey-7">
+                    <q-icon class="q-mb-xs" name="height" /> 縦 : {{ screenHeight }} px
+                </p>
+                <p class="text-h6 text-grey-7">
+                    DPI: {{ dpi }}
+                </p>
+                <p class="text-h6 text-grey-7">
+                    <q-icon class="q-mb-xs" name="monitor" /> : 約{{ roundedInches }}({{ floorInches }}) インチ
+                </p>
             </div>
         </q-page-container>
 
