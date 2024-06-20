@@ -62,7 +62,7 @@ const truncateToDecimal = (value: number, decimals: number) => {
                     DPI: {{ dpi }}
                 </p>
                 <p class="text-h6 text-grey-7">
-                    <q-icon class="q-mb-xs" name="monitor" /> : 約{{ roundedInches }}({{ floorInches }}) インチ
+                    <q-icon class="q-mb-xs" name="monitor" /> : 約{{ roundedInches }}({{ floorInches }}) inch
                 </p>
             </div>
         </q-page-container>
