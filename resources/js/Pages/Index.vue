@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import Footer from '../Components/Footer.vue';
 
 const screenWidth = ref(0);
 const screenHeight = ref(0);
@@ -47,7 +48,7 @@ const truncateToDecimal = (value: number, decimals: number) => {
         </q-header>
 
         <q-page-container class="container q-ma-lg">
-            <div id="dpi-calculator" style="width:1in; height:1in; position:absolute; left:-100%; top:-100%;"></div>
+            <div id="dpi-calculator"></div>
             <div class="q-ma-lg">
                 <p class="text-h4 text-grey-7">
                     現在の画面サイズ
@@ -66,10 +67,7 @@ const truncateToDecimal = (value: number, decimals: number) => {
                 </p>
             </div>
         </q-page-container>
-
-        <q-footer reveal bordered class="bg-grey-8 text-white q-pa-md text-center">
-            Copyright © <a href="https://x.com/it_araiguma" target="_blank">Saasで働くアライグマ</a> AllRights Reserved.
-        </q-footer>
+        <Footer />
     </q-layout>
 </template>
 
@@ -81,5 +79,13 @@ const truncateToDecimal = (value: number, decimals: number) => {
 
 .content {
     text-align: right;
+}
+
+#dpi-calculator {
+    width: 1in;
+    height: 1in;
+    position: absolute;
+    left: -100%;
+    top: -100%;
 }
 </style>
