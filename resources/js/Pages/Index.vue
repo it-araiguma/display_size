@@ -46,16 +46,16 @@ const truncateToDecimal = (value: number, decimals: number) => {
                 <p class="text-h4 text-grey-7">
                     現在の画面サイズ
                 </p>
-                <p class="text-h6 text-grey-7">
-                    <q-icon class="q-mb-xs" name="sync_alt" /> 幅 : {{ screenWidth }} px
+                <p class="text-grey-7">
+                    <q-icon class="q-mb-xs" name="sync_alt" /> <span class="text-subtitle1">幅 : </span>{{ screenWidth }} px
                 </p>
-                <p class="text-h6 text-grey-7">
+                <p class="text-grey-7">
                     <q-icon class="q-mb-xs" name="height" /> 縦 : {{ screenHeight }} px
                 </p>
-                <p class="text-h6 text-grey-7">
-                    DPI: {{ dpi }}
+                <p class="text-grey-7">
+                    DPI : {{ dpi }}
                 </p>
-                <p class="text-h6 text-grey-7">
+                <p class="text-grey-7">
                     <q-icon class="q-mb-xs" name="monitor" /> : 約{{ roundedInches }}({{ floorInches }}) inch
                 </p>
             </div>
@@ -81,4 +81,19 @@ const truncateToDecimal = (value: number, decimals: number) => {
     left: -100%;
     top: -100%;
 }
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Open Sans', sans-serif;
+}
+
+p {
+    font-family: 'Lato', sans-serif;
+}
+
 </style>
