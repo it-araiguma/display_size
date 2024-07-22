@@ -11,4 +11,9 @@ class IndexController extends Controller
     {
         return Inertia::render('Index');
     }
+
+    public function privacy()
+    {
+        return Inertia::render('Privacy');
+    }
 }

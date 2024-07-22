@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [IndexController::class, 'index'])->name('index');
+Route::get('privacy', [IndexController::class, 'privacy'])->name('privacy');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
