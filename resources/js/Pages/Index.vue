@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import Header from '../Components/Header.vue';
 import Footer from '../Components/Footer.vue';
 
 const screenWidth = ref(0);
@@ -38,15 +39,7 @@ const truncateToDecimal = (value: number, decimals: number) => {
 
 <template>
     <q-layout view="hHh lpR fFf">
-
-        <q-header bordered class="bg-primary text-white">
-            <q-toolbar>
-                <q-toolbar-title>
-                    <q-icon class="q-mb-xs" name="monitor" /> 画面サイズ確認
-                </q-toolbar-title>
-            </q-toolbar>
-        </q-header>
-
+        <Header />
         <q-page-container class="container q-ma-lg">
             <div id="dpi-calculator"></div>
             <div class="q-ma-lg">
