@@ -19,7 +19,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>画面のサイズ計測 | 現在のPC、スマホの画面サイズが分かる</title>
+    <title>画面のサイズ計測 | ディスプレイ画面の幅、縦、インチが計測できる便利ツール</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
