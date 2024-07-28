@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import Header from '../Components/Header.vue';
 import Footer from '../Components/Footer.vue';
 
@@ -11,6 +11,17 @@ const roundedInches = ref(0);
 const floorInches = ref(0);
 
 onMounted(() => {
+    updateDisplaySizeValue();
+    window.addEventListener('resize', updateDisplaySizeValue);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('resize', updateDisplaySizeValue);
+});
+
+
+const updateDisplaySizeValue = () => {
+    console.log(20);
     const dpiCalculator = document.getElementById('dpi-calculator');
     if (dpiCalculator) {
         dpi.value = dpiCalculator.offsetWidth;
@@ -19,10 +30,11 @@ onMounted(() => {
     screenWidth.value = window.screen.width;
     screenHeight.value = window.screen.height;
 
-    screenInches.value = calculateScreenInches(screenWidth.value, screenHeight.value, dpi.value);
-    roundedInches.value = Math.round(screenInches.value);
-    floorInches.value = truncateToDecimal(screenInches.value, 2);
-});
+    const inches = calculateScreenInches(screenWidth.value, screenHeight.value, dpi.value);
+    screenInches.value = inches;
+    roundedInches.value = Math.round(inches);
+    floorInches.value = truncateToDecimal(inches, 2);
+};
 
 const calculateScreenInches = (width: number, height: number, dpi: number) => {
     const widthInches = width / dpi;
@@ -47,7 +59,8 @@ const truncateToDecimal = (value: number, decimals: number) => {
                     現在の画面サイズ
                 </p>
                 <p class="text-grey-7">
-                    <q-icon class="q-mb-xs" name="sync_alt" /> <span class="text-subtitle1">幅 : </span>{{ screenWidth }} px
+                    <q-icon class="q-mb-xs" name="sync_alt" /> <span class="text-subtitle1">幅 : </span>{{ screenWidth }}
+                    px
                 </p>
                 <p class="text-grey-7">
                     <q-icon class="q-mb-xs" name="height" /> 縦 : {{ screenHeight }} px
@@ -88,12 +101,16 @@ body {
     line-height: 1.5;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: 'Open Sans', sans-serif;
 }
 
 p {
     font-family: 'Lato', sans-serif;
 }
-
 </style>
