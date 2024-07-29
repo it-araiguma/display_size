@@ -16,10 +16,20 @@
         gtag('config', 'G-ZDL50G0KC1');
     </script>
     @endif
+    <title>画面サイズチェッカー | ディスプレイ画面の幅、縦、インチが計測できる便利ツール</title>
+    <meta name="description" content="画面サイズチェッカーはディスプレイ画面の幅、縦、インチが計測できる便利ツールです。">
+    <link rel="icon" href="{{ asset('images/favicon.ico') }}">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>画面サイズチェッカー | ディスプレイ画面の幅、縦、インチが計測できる便利ツール</title>
+    <meta property="og:title" content="画面サイズチェッカー | ディスプレイ画面の幅、縦、インチが計測できる便利ツール" />
+    <meta property="og:description" content="画面サイズチェッカーはディスプレイ画面の幅、縦、インチが計測できる便利ツールです。" />
+    <meta property="og:url" content="{{ config('app.url') }}" />
+    <meta property="og:image" content="{{ asset('images/logo.png') }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="画面サイズチェッカー" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@it_araiguma">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
