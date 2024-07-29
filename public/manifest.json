@@ -1,0 +1,32 @@
+{
+    "name": "画面サイズチェッカー | ディスプレイ画面の幅、縦、インチが計測できる便利ツール",
+    "short_name": "画面サイズチェッカー",
+    "description": "画面サイズチェッカーは、ディスプレイ画面の幅、縦、インチが計測できる便利ツールです。",
+    "start_url": "https://display.it-araiguma.com/",
+    "display": "standalone",
+    "lang": "ja_JP",
+    "dir": "auto",
+    "orientation": "portrait",
+    "background_color": "#226FB7",
+    "theme_color": "#f8f9fa",
+    "icons": [
+        {
+            "src": "https://display.it-araiguma.com/images/32.png",
+            "type": "image/png",
+            "sizes": "32x32",
+            "purpose": "maskable"
+        },
+        {
+            "src": "https://display.it-araiguma.com/images/192.png",
+            "type": "image/png",
+            "sizes": "192x192",
+            "purpose": "maskable"
+        },
+        {
+            "src": "https://display.it-araiguma.com/images/512.png",
+            "type": "image/png",
+            "sizes": "512x512",
+            "purpose": "maskable"
+        }
+    ]
+}
