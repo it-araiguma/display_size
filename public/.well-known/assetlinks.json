@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.it_araiguma.display.twa",
+      "sha256_cert_fingerprints": [
+        "AE:83:94:CA:21:04:7C:9E:6C:3B:BF:B2:34:1A:C8:06:89:DE:7C:D4:4F:4B:8E:64:8B:62:0E:AC:CC:C7:DC:2B"
+      ]
+    }
+  }
+]
