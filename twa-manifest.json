@@ -1,0 +1,43 @@
+{
+  "packageId": "com.it_araiguma.display.twa",
+  "host": "display.it-araiguma.com",
+  "name": "画面サイズチェッカー | ディスプレイ画面の幅、縦、インチが計測できる便利ツール",
+  "launcherName": "画面サイズチェッカー",
+  "display": "standalone",
+  "themeColor": "#F8F9FA",
+  "themeColorDark": "#000000",
+  "navigationColor": "#000000",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#226FB7",
+  "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "https://display.it-araiguma.com/images/512.png",
+  "maskableIconUrl": "https://display.it-araiguma.com/images/512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "/home/aulani/develop/display_size/android.keystore",
+    "alias": "android"
+  },
+  "appVersionName": "1",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://display.it-araiguma.com/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://display.it-araiguma.com/",
+  "minSdkVersion": 19,
+  "orientation": "portrait",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "appVersion": "1"
+}
