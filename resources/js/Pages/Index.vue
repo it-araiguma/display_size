@@ -73,12 +73,6 @@ const truncateToDecimal = (value: number, decimals: number) => {
           <q-icon class="q-mb-xs" name="monitor"/>
           : 約{{ roundedInches }}({{ floorInches }}) inch
         </p>
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-9551028273212184"
-             data-ad-slot="5064784177"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
       </div>
     </q-page-container>
     <Footer/>
