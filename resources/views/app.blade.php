@@ -41,15 +41,15 @@
     @routes
     @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
     @inertiaHead
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9551028273212184"
+            crossorigin="anonymous"></script>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
 </head>
 
 <body class="font-sans antialiased">
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9551028273212184"
-        crossorigin="anonymous"></script>
 @inertia
-<script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
 </body>
 
 </html>
