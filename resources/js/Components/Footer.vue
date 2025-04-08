@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link } from "@inertiajs/inertia-vue3";
+import { Link } from "@inertiajs/vue3";
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
