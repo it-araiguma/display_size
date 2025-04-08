@@ -4,7 +4,13 @@ import { useI18n } from 'vue-i18n';
 import Header from '../Components/Header.vue';
 import Footer from '../Components/Footer.vue';
 
-const { t, locale } = useI18n();
+// i18nの初期化（Options APIとComposition APIの両方で動作するように）
+const { t, locale, availableLocales: i18nAvailableLocales } = useI18n({
+    useScope: 'global',
+    inheritLocale: true
+});
+
+// 使用可能な言語を明示的に定義
 const availableLocales = ref(['ja', 'en', 'zh-CN', 'ko']);
 const darkMode = ref(false);
 
