@@ -17,6 +17,15 @@ if (isProduction) {
     console.log('Running in production mode');
 }
 
+// 翻訳関数をグローバルに利用可能にする
+window.__ = (key) => {
+    if (!i18n.global || !i18n.global.t) {
+        console.warn('i18n not initialized yet, returning key:', key);
+        return key;
+    }
+    return i18n.global.t(key);
+};
+
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
 createInertiaApp({
@@ -46,6 +55,9 @@ createInertiaApp({
             // グローバルプロパティとしてi18nを追加（本番環境用の対策）
             app.config.globalProperties.$i18n = i18n.global;
             app.config.globalProperties.$t = i18n.global.t;
+            
+            // グローバル翻訳関数を追加
+            app.config.globalProperties.__ = window.__;
         }
         
         app.use(i18n);
