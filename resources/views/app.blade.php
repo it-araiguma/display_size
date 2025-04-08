@@ -56,9 +56,7 @@
     @inertiaHead
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9551028273212184"
         crossorigin="anonymous"></script>
-    <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
+    <!-- AdSenseの自動初期化スクリプトを削除 -->
 </head>
 
 <body class="font-sans antialiased">

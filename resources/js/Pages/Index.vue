@@ -50,6 +50,11 @@ onMounted(() => {
 
     // 言語に応じてSEOメタタグを更新
     updateSeoMetaTags();
+
+    // 広告の初期化（遅延実行）
+    setTimeout(() => {
+        initializeAds();
+    }, 1000);
 });
 
 onUnmounted(() => {
@@ -151,6 +156,26 @@ const updateSeoMetaTags = () => {
 
     // HTML要素のlang属性を更新
     document.documentElement.setAttribute('lang', currentLang === 'zh-CN' ? 'zh' : currentLang);
+};
+
+// 広告を初期化する関数
+const initializeAds = () => {
+    try {
+        // TypeScriptの型エラーを回避するためにanyを使用
+        const win = window as any;
+        // グローバルスコープにadsbygooleが存在することを確認
+        if (win.adsbygoogle && typeof win.adsbygoogle.push === 'function') {
+            // 既に初期化されていない広告要素のみを初期化
+            const adElements = document.querySelectorAll('ins.adsbygoogle:not([data-adsbygoogle-status])');
+            if (adElements.length > 0) {
+                adElements.forEach(ad => {
+                    win.adsbygoogle.push({});
+                });
+            }
+        }
+    } catch (error) {
+        console.error('広告の初期化中にエラーが発生しました:', error);
+    }
 };
 </script>
 
