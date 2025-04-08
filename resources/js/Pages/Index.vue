@@ -160,7 +160,7 @@ const updateSeoMetaTags = () => {
         'ja': '画面サイズチェッカー',
         'en': 'Screen Size Checker',
         'zh-CN': '屏幕尺寸检查器',
-        'ko': '화면 크기 체커'
+        'ko': '화面 크기 체커'
     };
 
     const currentLang = locale.value;
@@ -201,6 +201,10 @@ const initializeAds = () => {
         console.error('広告の初期化中にエラーが発生しました:', error);
     }
 };
+
+const getTranslation = (key: string) => {
+    return t(key);
+};
 </script>
 
 <template>
@@ -216,14 +220,14 @@ const initializeAds = () => {
                 <div class="col-12 col-md-6">
                     <q-card class="full-height">
                         <q-card-section class="bg-primary text-white">
-                            <!-- 緊急対策：グローバル翻訳関数を使用 -->
-                            <div class="text-h6" v-html="window.$t('app.screen_size')"></div>
+                            <!-- 緊急対策：直接翻訳テキストを使用 -->
+                            <div class="text-h6">{{ getTranslation('app.screen_size') }}</div>
                         </q-card-section>
 
                         <q-card-section>
                             <div class="text-center q-py-md">
                                 <div class="text-h2 text-weight-bold text-primary">{{ roundedInches }}"</div>
-                                <div class="text-subtitle1 text-grey-7">{{ floorInches }} <span v-html="window.$t('app.inches')"></span></div>
+                                <div class="text-subtitle1 text-grey-7">{{ floorInches }} {{ getTranslation('app.inches') }}</div>
                             </div>
 
                             <q-list>
@@ -232,8 +236,8 @@ const initializeAds = () => {
                                         <q-icon name="monitor" color="primary" size="md" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label v-html="window.$t('app.diagonal')"></q-item-label>
-                                        <q-item-label caption>{{ floorInches }} <span v-html="window.$t('app.inches')"></span></q-item-label>
+                                        <q-item-label>{{ getTranslation('app.diagonal') }}</q-item-label>
+                                        <q-item-label caption>{{ floorInches }} {{ getTranslation('app.inches') }}</q-item-label>
                                     </q-item-section>
                                 </q-item>
 
@@ -244,8 +248,8 @@ const initializeAds = () => {
                                         <q-icon name="swap_horiz" color="primary" size="md" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label v-html="window.$t('app.width')"></q-item-label>
-                                        <q-item-label caption>{{ screenWidth }} <span v-html="window.$t('app.pixels')"></span></q-item-label>
+                                        <q-item-label>{{ getTranslation('app.width') }}</q-item-label>
+                                        <q-item-label caption>{{ screenWidth }} {{ getTranslation('app.pixels') }}</q-item-label>
                                     </q-item-section>
                                 </q-item>
 
@@ -256,8 +260,8 @@ const initializeAds = () => {
                                         <q-icon name="swap_vert" color="primary" size="md" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label v-html="window.$t('app.height')"></q-item-label>
-                                        <q-item-label caption>{{ screenHeight }} <span v-html="window.$t('app.pixels')"></span></q-item-label>
+                                        <q-item-label>{{ getTranslation('app.height') }}</q-item-label>
+                                        <q-item-label caption>{{ screenHeight }} {{ getTranslation('app.pixels') }}</q-item-label>
                                     </q-item-section>
                                 </q-item>
                             </q-list>
@@ -269,7 +273,7 @@ const initializeAds = () => {
                 <div class="col-12 col-md-6">
                     <q-card class="full-height">
                         <q-card-section class="bg-secondary text-white">
-                            <div class="text-h6" v-html="window.$t('app.device_info')"></div>
+                            <div class="text-h6">{{ getTranslation('app.device_info') }}</div>
                         </q-card-section>
 
                         <q-card-section>
@@ -279,7 +283,7 @@ const initializeAds = () => {
                                         <q-icon name="aspect_ratio" color="secondary" size="md" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label v-html="window.$t('app.resolution')"></q-item-label>
+                                        <q-item-label>{{ getTranslation('app.resolution') }}</q-item-label>
                                         <q-item-label caption>{{ resolution }}</q-item-label>
                                     </q-item-section>
                                 </q-item>
@@ -291,7 +295,7 @@ const initializeAds = () => {
                                         <q-icon name="photo_size_select_small" color="secondary" size="md" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label v-html="window.$t('app.aspect_ratio')"></q-item-label>
+                                        <q-item-label>{{ getTranslation('app.aspect_ratio') }}</q-item-label>
                                         <q-item-label caption>{{ aspectRatio }}</q-item-label>
                                     </q-item-section>
                                 </q-item>
@@ -303,8 +307,8 @@ const initializeAds = () => {
                                         <q-icon name="grain" color="secondary" size="md" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label v-html="window.$t('app.pixel_density')"></q-item-label>
-                                        <q-item-label caption>{{ ppi }} <span v-html="window.$t('app.ppi')"></span></q-item-label>
+                                        <q-item-label>{{ getTranslation('app.pixel_density') }}</q-item-label>
+                                        <q-item-label caption>{{ ppi }} {{ getTranslation('app.ppi') }}</q-item-label>
                                     </q-item-section>
                                 </q-item>
 
