@@ -1,26 +1,45 @@
 <script setup lang="ts">
 import { Link } from "@inertiajs/inertia-vue3";
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
+defineProps({
+    darkMode: {
+        type: Boolean,
+        default: false
+    }
+});
 </script>
 
 <template>
-    <q-footer reveal bordered class="bg-grey-8 text-white q-pa-md text-center text-subtitle2">
-        <div class="copyright text-center q-mb-xs">
-            <Link :href="route('index')" class="q-mx-xs">ホーム</Link>
-            <Link :href="route('privacy')" class="q-mx-xs">プライバシーポリシー</Link>
+    <q-footer reveal bordered :class="darkMode ? 'bg-dark' : 'bg-grey-8'" class="text-white q-pa-md">
+        <div class="row justify-center q-mb-sm">
+            <div class="col-auto q-mx-xs">
+                <Link :href="route('index')" class="footer-link">{{ t('app.home') }}</Link>
+            </div>
+            <div class="col-auto q-mx-xs">
+                <Link :href="route('privacy')" class="footer-link">{{ t('app.privacy_policy') }}</Link>
+            </div>
         </div>
 
-        <div class="copyright text-center">
-            Copyright © <a href="https://it-araiguma.com" target="_blank">ITアライグマ</a> AllRights Reserved.
+        <div class="text-center text-caption q-mt-sm">
+            Copyright &copy; <a href="https://it-araiguma.com" target="_blank" class="footer-link">ITアライグマ</a> AllRights
+            Reserved.
         </div>
     </q-footer>
 </template>
 
 <style scoped>
-.copyright {
-    font-size: 14px;
+.footer-link {
+    color: #fff;
+    text-decoration: none;
+    opacity: 0.9;
+    transition: opacity 0.2s;
 }
 
-.copyright>a {
-    color: #fff;
+.footer-link:hover {
+    opacity: 1;
+    text-decoration: underline;
 }
 </style>
