@@ -1,14 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import Header from '../Components/Header.vue';
 import Footer from '../Components/Footer.vue';
-
-// i18nの初期化（Options APIとComposition APIの両方で動作するように）
-const { t, locale, availableLocales: i18nAvailableLocales } = useI18n({
-    useScope: 'global',
-    inheritLocale: true
-});
 
 // 使用可能な言語を明示的に定義
 const availableLocales = ref(['ja', 'en', 'zh-CN', 'ko']);
@@ -22,12 +15,92 @@ const roundedInches = ref(0);
 const floorInches = ref(0);
 const ppi = ref(0);
 
+const locale = ref('ja');
+
 const resolution = computed(() => `${screenWidth.value} × ${screenHeight.value}`);
 const aspectRatio = computed(() => {
     const gcd = (a: number, b: number): number => b ? gcd(b, a % b) : a;
     const divisor = gcd(screenWidth.value, screenHeight.value);
     return `${screenWidth.value / divisor}:${screenHeight.value / divisor}`;
 });
+
+// i18nを使わない直接的な翻訳オブジェクト
+const translations = {
+    'ja': {
+        'app.screen_size': '画面サイズ',
+        'app.inches': 'インチ',
+        'app.diagonal': '対角線',
+        'app.width': '幅',
+        'app.pixels': 'ピクセル',
+        'app.height': '高さ',
+        'app.device_info': 'デバイス情報',
+        'app.resolution': '解像度',
+        'app.aspect_ratio': 'アスペクト比',
+        'app.pixel_density': 'ピクセル密度',
+        'app.ppi': 'PPI',
+        'app.home': 'ホーム',
+        'app.privacy_policy': 'プライバシーポリシー'
+    },
+    'en': {
+        'app.screen_size': 'Screen Size',
+        'app.inches': 'inches',
+        'app.diagonal': 'Diagonal',
+        'app.width': 'Width',
+        'app.pixels': 'pixels',
+        'app.height': 'Height',
+        'app.device_info': 'Device Info',
+        'app.resolution': 'Resolution',
+        'app.aspect_ratio': 'Aspect Ratio',
+        'app.pixel_density': 'Pixel Density',
+        'app.ppi': 'PPI',
+        'app.home': 'Home',
+        'app.privacy_policy': 'Privacy Policy'
+    },
+    'zh-CN': {
+        'app.screen_size': '屏幕尺寸',
+        'app.inches': '英寸',
+        'app.diagonal': '对角线',
+        'app.width': '宽度',
+        'app.pixels': '像素',
+        'app.height': '高度',
+        'app.device_info': '设备信息',
+        'app.resolution': '分辨率',
+        'app.aspect_ratio': '宽高比',
+        'app.pixel_density': '像素密度',
+        'app.ppi': 'PPI',
+        'app.home': '首页',
+        'app.privacy_policy': '隐私政策'
+    },
+    'ko': {
+        'app.screen_size': '화면 크기',
+        'app.inches': '인치',
+        'app.diagonal': '대각선',
+        'app.width': '너비',
+        'app.pixels': '픽셀',
+        'app.height': '높이',
+        'app.device_info': '장치 정보',
+        'app.resolution': '해상도',
+        'app.aspect_ratio': '화면비',
+        'app.pixel_density': '픽셀 밀도',
+        'app.ppi': 'PPI',
+        'app.home': '홈',
+        'app.privacy_policy': '개인정보 보호정책'
+    }
+};
+
+// i18nを使わない直接的な翻訳関数
+const getText = (key) => {
+    const currentLocale = locale.value || 'ja';
+    if (translations[currentLocale] && translations[currentLocale][key]) {
+        return translations[currentLocale][key];
+    }
+    // フォールバック：英語
+    if (translations['en'] && translations['en'][key]) {
+        return translations['en'][key];
+    }
+    // キーをそのまま返す
+    return key;
+};
 
 onMounted(() => {
     updateDisplaySizeValue();
@@ -53,9 +126,6 @@ onMounted(() => {
         locale.value = langParam;
         localStorage.setItem('locale', langParam);
     }
-
-    // 言語に応じてSEOメタタグを更新
-    updateSeoMetaTags();
 
     // 広告の初期化（遅延実行）
     setTimeout(() => {
@@ -83,29 +153,10 @@ const changeLocale = (newLocale: string) => {
         locale.value = newLocale;
         localStorage.setItem('locale', newLocale);
         
-        // グローバル変数にも現在のロケールを設定（緊急対策）
-        window.$locale = newLocale;
-        
         // URLのlangパラメータを更新（ページリロードなし）
         const url = new URL(window.location.href);
         url.searchParams.set('lang', newLocale);
         window.history.pushState({}, '', url);
-        
-        // 言語切替後に翻訳キーが正しく適用されるように強制的に再レンダリング
-        document.documentElement.setAttribute('lang', newLocale === 'zh-CN' ? 'zh' : newLocale);
-        
-        // SEOメタタグを更新
-        updateSeoMetaTags();
-        
-        // 開発環境でのデバッグ情報
-        if (process.env.NODE_ENV !== 'production') {
-            console.log('Locale changed to:', newLocale);
-            console.log('Current translations sample:', {
-                title: t('app.title'),
-                screenSize: t('app.screen_size'),
-                inches: t('app.inches')
-            });
-        }
     }
 };
 
@@ -140,48 +191,6 @@ const truncateToDecimal = (value: number, decimals: number) => {
     return Math.floor(value * factor) / factor;
 }
 
-// SEOメタタグを言語に応じて更新する関数
-const updateSeoMetaTags = () => {
-    const titles = {
-        'ja': '画面サイズチェッカー | ディスプレイ画面の幅、縦、インチが計測できる便利ツール',
-        'en': 'Screen Size Checker | A Handy Tool to Measure Display Width, Height, and Inches',
-        'zh-CN': '屏幕尺寸检查器 | 测量显示屏宽度、高度和英寸的便捷工具',
-        'ko': '화면 크기 체커 | 디스플레이 화면의 너비, 높이, 인치를 측정할 수 있는 편리한 도구'
-    };
-
-    const descriptions = {
-        'ja': '画面サイズチェッカーはディスプレイ画面の幅、縦、インチが計測できる便利ツールです。',
-        'en': 'Screen Size Checker is a handy tool that allows you to measure the width, height, and inches of your display screen.',
-        'zh-CN': '屏幕尺寸检查器是一个方便的工具，可以测量显示屏的宽度、高度和英寸。',
-        'ko': '화면 크기 체커는 디스플레이 화면의 너비, 높이, 인치를 측정할 수 있는 편리한 도구입니다.'
-    };
-
-    const siteNames = {
-        'ja': '画面サイズチェッカー',
-        'en': 'Screen Size Checker',
-        'zh-CN': '屏幕尺寸检查器',
-        'ko': '화面 크기 체커'
-    };
-
-    const currentLang = locale.value;
-
-    // タイトルとメタ説明を更新
-    const titleElement = document.getElementById('page-title');
-    const descriptionElement = document.getElementById('page-description');
-    const ogTitleElement = document.getElementById('og-title');
-    const ogDescriptionElement = document.getElementById('og-description');
-    const ogSiteNameElement = document.getElementById('og-site-name');
-
-    if (titleElement) titleElement.textContent = titles[currentLang];
-    if (descriptionElement) descriptionElement.setAttribute('content', descriptions[currentLang]);
-    if (ogTitleElement) ogTitleElement.setAttribute('content', titles[currentLang]);
-    if (ogDescriptionElement) ogDescriptionElement.setAttribute('content', descriptions[currentLang]);
-    if (ogSiteNameElement) ogSiteNameElement.setAttribute('content', siteNames[currentLang]);
-
-    // HTML要素のlang属性を更新
-    document.documentElement.setAttribute('lang', currentLang === 'zh-CN' ? 'zh' : currentLang);
-};
-
 // 広告を初期化する関数
 const initializeAds = () => {
     try {
@@ -201,10 +210,6 @@ const initializeAds = () => {
         console.error('広告の初期化中にエラーが発生しました:', error);
     }
 };
-
-const getTranslation = (key: string) => {
-    return t(key);
-};
 </script>
 
 <template>
@@ -220,14 +225,13 @@ const getTranslation = (key: string) => {
                 <div class="col-12 col-md-6">
                     <q-card class="full-height">
                         <q-card-section class="bg-primary text-white">
-                            <!-- 緊急対策：直接翻訳テキストを使用 -->
-                            <div class="text-h6">{{ getTranslation('app.screen_size') }}</div>
+                            <div class="text-h6">{{ getText('app.screen_size') }}</div>
                         </q-card-section>
 
                         <q-card-section>
                             <div class="text-center q-py-md">
                                 <div class="text-h2 text-weight-bold text-primary">{{ roundedInches }}"</div>
-                                <div class="text-subtitle1 text-grey-7">{{ floorInches }} {{ getTranslation('app.inches') }}</div>
+                                <div class="text-subtitle1 text-grey-7">{{ floorInches }} {{ getText('app.inches') }}</div>
                             </div>
 
                             <q-list>
@@ -236,8 +240,8 @@ const getTranslation = (key: string) => {
                                         <q-icon name="monitor" color="primary" size="md" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label>{{ getTranslation('app.diagonal') }}</q-item-label>
-                                        <q-item-label caption>{{ floorInches }} {{ getTranslation('app.inches') }}</q-item-label>
+                                        <q-item-label>{{ getText('app.diagonal') }}</q-item-label>
+                                        <q-item-label caption>{{ floorInches }} {{ getText('app.inches') }}</q-item-label>
                                     </q-item-section>
                                 </q-item>
 
@@ -248,8 +252,8 @@ const getTranslation = (key: string) => {
                                         <q-icon name="swap_horiz" color="primary" size="md" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label>{{ getTranslation('app.width') }}</q-item-label>
-                                        <q-item-label caption>{{ screenWidth }} {{ getTranslation('app.pixels') }}</q-item-label>
+                                        <q-item-label>{{ getText('app.width') }}</q-item-label>
+                                        <q-item-label caption>{{ screenWidth }} {{ getText('app.pixels') }}</q-item-label>
                                     </q-item-section>
                                 </q-item>
 
@@ -260,8 +264,8 @@ const getTranslation = (key: string) => {
                                         <q-icon name="swap_vert" color="primary" size="md" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label>{{ getTranslation('app.height') }}</q-item-label>
-                                        <q-item-label caption>{{ screenHeight }} {{ getTranslation('app.pixels') }}</q-item-label>
+                                        <q-item-label>{{ getText('app.height') }}</q-item-label>
+                                        <q-item-label caption>{{ screenHeight }} {{ getText('app.pixels') }}</q-item-label>
                                     </q-item-section>
                                 </q-item>
                             </q-list>
@@ -273,7 +277,7 @@ const getTranslation = (key: string) => {
                 <div class="col-12 col-md-6">
                     <q-card class="full-height">
                         <q-card-section class="bg-secondary text-white">
-                            <div class="text-h6">{{ getTranslation('app.device_info') }}</div>
+                            <div class="text-h6">{{ getText('app.device_info') }}</div>
                         </q-card-section>
 
                         <q-card-section>
@@ -283,7 +287,7 @@ const getTranslation = (key: string) => {
                                         <q-icon name="aspect_ratio" color="secondary" size="md" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label>{{ getTranslation('app.resolution') }}</q-item-label>
+                                        <q-item-label>{{ getText('app.resolution') }}</q-item-label>
                                         <q-item-label caption>{{ resolution }}</q-item-label>
                                     </q-item-section>
                                 </q-item>
@@ -295,7 +299,7 @@ const getTranslation = (key: string) => {
                                         <q-icon name="photo_size_select_small" color="secondary" size="md" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label>{{ getTranslation('app.aspect_ratio') }}</q-item-label>
+                                        <q-item-label>{{ getText('app.aspect_ratio') }}</q-item-label>
                                         <q-item-label caption>{{ aspectRatio }}</q-item-label>
                                     </q-item-section>
                                 </q-item>
@@ -307,8 +311,8 @@ const getTranslation = (key: string) => {
                                         <q-icon name="grain" color="secondary" size="md" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label>{{ getTranslation('app.pixel_density') }}</q-item-label>
-                                        <q-item-label caption>{{ ppi }} {{ getTranslation('app.ppi') }}</q-item-label>
+                                        <q-item-label>{{ getText('app.pixel_density') }}</q-item-label>
+                                        <q-item-label caption>{{ ppi }} {{ getText('app.ppi') }}</q-item-label>
                                     </q-item-section>
                                 </q-item>
 
