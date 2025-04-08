@@ -10,7 +10,6 @@ class IndexController extends Controller
 {
     public function index(Request $request): Response
     {
-        dd($request->getPreferredLanguage());
         return Inertia::render('Index');
     }
 
