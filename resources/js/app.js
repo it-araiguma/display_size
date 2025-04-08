@@ -11,6 +11,12 @@ import "@quasar/extras/material-icons/material-icons.css";
 import "quasar/src/css/index.sass";
 import i18n from "./i18n";
 
+// 本番環境でのデバッグ情報
+const isProduction = import.meta.env.PROD;
+if (isProduction) {
+    console.log('Running in production mode');
+}
+
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
 createInertiaApp({
@@ -32,7 +38,16 @@ createInertiaApp({
             lang: quasarLang,
         });
         
-        // i18nを明示的に設定
+        // i18nを明示的に設定（本番環境では特別な処理を追加）
+        if (isProduction) {
+            // 本番環境では、i18nの初期化を確実に行う
+            console.log('Initializing i18n in production mode');
+            
+            // グローバルプロパティとしてi18nを追加（本番環境用の対策）
+            app.config.globalProperties.$i18n = i18n.global;
+            app.config.globalProperties.$t = i18n.global.t;
+        }
+        
         app.use(i18n);
         
         // グローバルメソッドを追加
