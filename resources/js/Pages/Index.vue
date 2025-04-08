@@ -102,6 +102,48 @@ const getText = (key) => {
     return key;
 };
 
+// SEOメタタグを言語に応じて更新する関数
+const updateSeoMetaTags = () => {
+    const titles = {
+        'ja': '画面サイズチェッカー | ディスプレイ画面の幅、縦、インチが計測できる便利ツール',
+        'en': 'Screen Size Checker | A Handy Tool to Measure Display Width, Height, and Inches',
+        'zh-CN': '屏幕尺寸检查器 | 测量显示屏宽度、高度和英寸的便捷工具',
+        'ko': '화면 크기 체커 | 디스플레이 화면의 너비, 높이, 인치를 측정할 수 있는 편리한 도구'
+    };
+
+    const descriptions = {
+        'ja': '画面サイズチェッカーはディスプレイ画面の幅、縦、インチが計測できる便利ツールです。',
+        'en': 'Screen Size Checker is a handy tool that allows you to measure the width, height, and inches of your display screen.',
+        'zh-CN': '屏幕尺寸检查器是一个方便的工具，可以测量显示屏的宽度、高度和英寸。',
+        'ko': '화면 크기 체커는 디스플레이 화면의 너비, 높이, 인치를 측정할 수 있는 편리한 도구입니다.'
+    };
+
+    const siteNames = {
+        'ja': '画面サイズチェッカー',
+        'en': 'Screen Size Checker',
+        'zh-CN': '屏幕尺寸检查器',
+        'ko': '화면 크기 체커'
+    };
+
+    const currentLang = locale.value;
+
+    // タイトルとメタ説明を更新
+    const titleElement = document.getElementById('page-title');
+    const descriptionElement = document.getElementById('page-description');
+    const ogTitleElement = document.getElementById('og-title');
+    const ogDescriptionElement = document.getElementById('og-description');
+    const ogSiteNameElement = document.getElementById('og-site-name');
+
+    if (titleElement) titleElement.textContent = titles[currentLang];
+    if (descriptionElement) descriptionElement.setAttribute('content', descriptions[currentLang]);
+    if (ogTitleElement) ogTitleElement.setAttribute('content', titles[currentLang]);
+    if (ogDescriptionElement) ogDescriptionElement.setAttribute('content', descriptions[currentLang]);
+    if (ogSiteNameElement) ogSiteNameElement.setAttribute('content', siteNames[currentLang]);
+
+    // HTML要素のlang属性を更新
+    document.documentElement.setAttribute('lang', currentLang === 'zh-CN' ? 'zh' : currentLang);
+};
+
 onMounted(() => {
     updateDisplaySizeValue();
     window.addEventListener('resize', updateDisplaySizeValue);
@@ -126,6 +168,9 @@ onMounted(() => {
         locale.value = langParam;
         localStorage.setItem('locale', langParam);
     }
+
+    // 言語に応じてSEOメタタグを更新
+    updateSeoMetaTags();
 
     // 広告の初期化（遅延実行）
     setTimeout(() => {
@@ -157,6 +202,12 @@ const changeLocale = (newLocale: string) => {
         const url = new URL(window.location.href);
         url.searchParams.set('lang', newLocale);
         window.history.pushState({}, '', url);
+        
+        // 言語切替後に翻訳キーが正しく適用されるように強制的に再レンダリング
+        document.documentElement.setAttribute('lang', newLocale === 'zh-CN' ? 'zh' : newLocale);
+        
+        // SEOメタタグを更新
+        updateSeoMetaTags();
     }
 };
 
