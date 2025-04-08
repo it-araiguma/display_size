@@ -71,18 +71,33 @@ const applyTheme = () => {
     document.body.classList.toggle('body--dark', darkMode.value);
 };
 
-// 言語変更時にSEOメタタグも更新
+// 言語切替関数
 const changeLocale = (newLocale: string) => {
-    locale.value = newLocale;
-    localStorage.setItem('locale', newLocale);
-
-    // URLのlangパラメータを更新（ページリロードなし）
-    const url = new URL(window.location.href);
-    url.searchParams.set('lang', newLocale);
-    window.history.pushState({}, '', url);
-
-    // SEOメタタグを更新
-    updateSeoMetaTags();
+    if (availableLocales.value.includes(newLocale)) {
+        locale.value = newLocale;
+        localStorage.setItem('locale', newLocale);
+        
+        // URLのlangパラメータを更新（ページリロードなし）
+        const url = new URL(window.location.href);
+        url.searchParams.set('lang', newLocale);
+        window.history.pushState({}, '', url);
+        
+        // 言語切替後に翻訳キーが正しく適用されるように強制的に再レンダリング
+        document.documentElement.setAttribute('lang', newLocale === 'zh-CN' ? 'zh' : newLocale);
+        
+        // SEOメタタグを更新
+        updateSeoMetaTags();
+        
+        // 開発環境でのデバッグ情報
+        if (process.env.NODE_ENV !== 'production') {
+            console.log('Locale changed to:', newLocale);
+            console.log('Current translations sample:', {
+                title: t('app.title'),
+                screenSize: t('app.screen_size'),
+                inches: t('app.inches')
+            });
+        }
+    }
 };
 
 const updateDisplaySizeValue = () => {
