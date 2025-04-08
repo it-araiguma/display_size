@@ -251,20 +251,64 @@ body {
 
 .body--dark {
     background-color: #121212;
-    color: #f5f5f5;
+    color: #ffffff;
 }
 
 .body--dark .q-card {
     background-color: #1e1e1e;
-    color: #f5f5f5;
+    color: #ffffff;
 }
 
 .body--dark .q-item {
-    color: #f5f5f5;
+    color: #ffffff;
+}
+
+.body--dark .q-item__label {
+    color: #ffffff !important;
+}
+
+.body--dark .q-item__label--caption {
+    color: #e0e0e0 !important;
+    font-size: 0.9rem !important;
+    letter-spacing: 0.03em !important;
+}
+
+.body--dark .q-item-label {
+    color: #ffffff;
+}
+
+.body--dark .q-item-label.caption {
+    color: #e0e0e0;
+}
+
+.body--dark .text-grey-7 {
+    color: #e0e0e0 !important;
+}
+
+.body--dark .text-primary {
+    color: #90CAF9 !important;
+}
+
+.body--dark .text-secondary {
+    color: #A5D6A7 !important;
+}
+
+.body--dark .text-h2 {
+    color: #90CAF9 !important;
+    text-shadow: 0 0 10px rgba(144, 202, 249, 0.4);
+}
+
+.body--dark .text-h6 {
+    color: #ffffff !important;
+    font-weight: bold;
+}
+
+.body--dark .text-subtitle1 {
+    color: #e0e0e0 !important;
 }
 
 .body--dark .q-separator {
-    background-color: rgba(255, 255, 255, 0.12);
+    background-color: rgba(255, 255, 255, 0.3);
 }
 
 h1,
@@ -278,5 +322,34 @@ h6 {
 
 p {
     font-family: 'Lato', sans-serif;
+}
+
+/* ダークモード時のカードのスタイル改善 */
+.body--dark .q-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+}
+
+/* ダークモード時のアイコンの色を明るく */
+.body--dark .q-icon {
+    color: #90CAF9;
+}
+
+/* ダークモード時のカードヘッダーの色を調整 */
+.body--dark .bg-primary {
+    background-color: #1976D2 !important;
+}
+
+.body--dark .bg-secondary {
+    background-color: #2E7D32 !important;
+}
+
+/* ダークモード時のアイテムホバー効果 */
+.body--dark .q-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* キャプション全般の可読性向上 */
+.body--dark .caption {
+    color: #e0e0e0 !important;
 }
 </style>
