@@ -83,6 +83,9 @@ const changeLocale = (newLocale: string) => {
         locale.value = newLocale;
         localStorage.setItem('locale', newLocale);
         
+        // グローバル変数にも現在のロケールを設定（緊急対策）
+        window.$locale = newLocale;
+        
         // URLのlangパラメータを更新（ページリロードなし）
         const url = new URL(window.location.href);
         url.searchParams.set('lang', newLocale);
@@ -213,13 +216,14 @@ const initializeAds = () => {
                 <div class="col-12 col-md-6">
                     <q-card class="full-height">
                         <q-card-section class="bg-primary text-white">
-                            <div class="text-h6">{{ t('app.screen_size') }}</div>
+                            <!-- 緊急対策：グローバル翻訳関数を使用 -->
+                            <div class="text-h6" v-html="window.$t('app.screen_size')"></div>
                         </q-card-section>
 
                         <q-card-section>
                             <div class="text-center q-py-md">
                                 <div class="text-h2 text-weight-bold text-primary">{{ roundedInches }}"</div>
-                                <div class="text-subtitle1 text-grey-7">{{ floorInches }} {{ t('app.inches') }}</div>
+                                <div class="text-subtitle1 text-grey-7">{{ floorInches }} <span v-html="window.$t('app.inches')"></span></div>
                             </div>
 
                             <q-list>
@@ -228,8 +232,8 @@ const initializeAds = () => {
                                         <q-icon name="monitor" color="primary" size="md" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label>{{ t('app.diagonal') }}</q-item-label>
-                                        <q-item-label caption>{{ floorInches }} {{ t('app.inches') }}</q-item-label>
+                                        <q-item-label v-html="window.$t('app.diagonal')"></q-item-label>
+                                        <q-item-label caption>{{ floorInches }} <span v-html="window.$t('app.inches')"></span></q-item-label>
                                     </q-item-section>
                                 </q-item>
 
@@ -240,8 +244,8 @@ const initializeAds = () => {
                                         <q-icon name="swap_horiz" color="primary" size="md" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label>{{ t('app.width') }}</q-item-label>
-                                        <q-item-label caption>{{ screenWidth }} {{ t('app.pixels') }}</q-item-label>
+                                        <q-item-label v-html="window.$t('app.width')"></q-item-label>
+                                        <q-item-label caption>{{ screenWidth }} <span v-html="window.$t('app.pixels')"></span></q-item-label>
                                     </q-item-section>
                                 </q-item>
 
@@ -252,8 +256,8 @@ const initializeAds = () => {
                                         <q-icon name="swap_vert" color="primary" size="md" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label>{{ t('app.height') }}</q-item-label>
-                                        <q-item-label caption>{{ screenHeight }} {{ t('app.pixels') }}</q-item-label>
+                                        <q-item-label v-html="window.$t('app.height')"></q-item-label>
+                                        <q-item-label caption>{{ screenHeight }} <span v-html="window.$t('app.pixels')"></span></q-item-label>
                                     </q-item-section>
                                 </q-item>
                             </q-list>
@@ -265,7 +269,7 @@ const initializeAds = () => {
                 <div class="col-12 col-md-6">
                     <q-card class="full-height">
                         <q-card-section class="bg-secondary text-white">
-                            <div class="text-h6">{{ t('app.device_info') }}</div>
+                            <div class="text-h6" v-html="window.$t('app.device_info')"></div>
                         </q-card-section>
 
                         <q-card-section>
@@ -275,7 +279,7 @@ const initializeAds = () => {
                                         <q-icon name="aspect_ratio" color="secondary" size="md" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label>{{ t('app.resolution') }}</q-item-label>
+                                        <q-item-label v-html="window.$t('app.resolution')"></q-item-label>
                                         <q-item-label caption>{{ resolution }}</q-item-label>
                                     </q-item-section>
                                 </q-item>
@@ -287,7 +291,7 @@ const initializeAds = () => {
                                         <q-icon name="photo_size_select_small" color="secondary" size="md" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label>{{ t('app.aspect_ratio') }}</q-item-label>
+                                        <q-item-label v-html="window.$t('app.aspect_ratio')"></q-item-label>
                                         <q-item-label caption>{{ aspectRatio }}</q-item-label>
                                     </q-item-section>
                                 </q-item>
@@ -299,8 +303,8 @@ const initializeAds = () => {
                                         <q-icon name="grain" color="secondary" size="md" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <q-item-label>{{ t('app.pixel_density') }}</q-item-label>
-                                        <q-item-label caption>{{ ppi }} {{ t('app.ppi') }}</q-item-label>
+                                        <q-item-label v-html="window.$t('app.pixel_density')"></q-item-label>
+                                        <q-item-label caption>{{ ppi }} <span v-html="window.$t('app.ppi')"></span></q-item-label>
                                     </q-item-section>
                                 </q-item>
 
