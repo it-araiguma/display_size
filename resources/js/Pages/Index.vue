@@ -4,7 +4,7 @@ import Header from '../Components/Header.vue';
 import Footer from '../Components/Footer.vue';
 
 // 使用可能な言語を明示的に定義
-const availableLocales = ref(['ja', 'en', 'zh-CN', 'ko']);
+const availableLocales = ref(['ja', 'en', 'zh-CN', 'ko', 'fr', 'es']);
 const darkMode = ref(false);
 
 const screenWidth = ref(0);
@@ -85,6 +85,36 @@ const translations = {
         'app.ppi': 'PPI',
         'app.home': '홈',
         'app.privacy_policy': '개인정보 보호정책'
+    },
+    'fr': {
+        'app.screen_size': 'Taille d\'écran',
+        'app.inches': 'pouces',
+        'app.diagonal': 'Diagonale',
+        'app.width': 'Largeur',
+        'app.pixels': 'pixels',
+        'app.height': 'Hauteur',
+        'app.device_info': 'Infos appareil',
+        'app.resolution': 'Résolution',
+        'app.aspect_ratio': 'Ratio d\'aspect',
+        'app.pixel_density': 'Densité de pixels',
+        'app.ppi': 'PPP',
+        'app.home': 'Accueil',
+        'app.privacy_policy': 'Politique de confidentialité'
+    },
+    'es': {
+        'app.screen_size': 'Tamaño de pantalla',
+        'app.inches': 'pulgadas',
+        'app.diagonal': 'Diagonal',
+        'app.width': 'Ancho',
+        'app.pixels': 'píxeles',
+        'app.height': 'Altura',
+        'app.device_info': 'Info del dispositivo',
+        'app.resolution': 'Resolución',
+        'app.aspect_ratio': 'Relación de aspecto',
+        'app.pixel_density': 'Densidad de píxeles',
+        'app.ppi': 'PPI',
+        'app.home': 'Inicio',
+        'app.privacy_policy': 'Política de privacidad'
     }
 };
 
@@ -108,21 +138,27 @@ const updateSeoMetaTags = () => {
         'ja': '画面サイズチェッカー | ディスプレイ画面の幅、縦、インチが計測できる便利ツール',
         'en': 'Screen Size Checker | A Handy Tool to Measure Display Width, Height, and Inches',
         'zh-CN': '屏幕尺寸检查器 | 测量显示屏宽度、高度和英寸的便捷工具',
-        'ko': '화면 크기 체커 | 디스플레이 화면의 너비, 높이, 인치를 측정할 수 있는 편리한 도구'
+        'ko': '화면 크기 체커 | 디스플레이 화면의 너비, 높이, 인치를 측정할 수 있는 편리한 도구',
+        'fr': 'Vérificateur de taille d\'écran | Un outil pratique pour mesurer la largeur, la hauteur et les pouces de votre écran',
+        'es': 'Comprobador de tamaño de pantalla | Una herramienta útil para medir el ancho, alto y pulgadas de su pantalla'
     };
 
     const descriptions = {
         'ja': '画面サイズチェッカーはディスプレイ画面の幅、縦、インチが計測できる便利ツールです。',
         'en': 'Screen Size Checker is a handy tool that allows you to measure the width, height, and inches of your display screen.',
         'zh-CN': '屏幕尺寸检查器是一个方便的工具，可以测量显示屏的宽度、高度和英寸。',
-        'ko': '화면 크기 체커는 디스플레이 화면의 너비, 높이, 인치를 측정할 수 있는 편리한 도구입니다.'
+        'ko': '화면 크기 체커는 디스플레이 화면의 너비, 높이, 인치를 측정할 수 있는 편리한 도구입니다.',
+        'fr': 'Le vérificateur de taille d\'écran est un outil pratique qui vous permet de mesurer la largeur, la hauteur et les pouces de votre écran.',
+        'es': 'El comprobador de tamaño de pantalla es una herramienta útil que le permite medir el ancho, alto y pulgadas de su pantalla.'
     };
 
     const siteNames = {
         'ja': '画面サイズチェッカー',
         'en': 'Screen Size Checker',
         'zh-CN': '屏幕尺寸检查器',
-        'ko': '화면 크기 체커'
+        'ko': '화면 크기 체커',
+        'fr': 'Vérificateur de taille d\'écran',
+        'es': 'Comprobador de tamaño de pantalla'
     };
 
     const currentLang = locale.value;
