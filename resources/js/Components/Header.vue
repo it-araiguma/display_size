@@ -57,14 +57,14 @@ const getAppTitle = (currentLocale: string) => {
 
             <!-- Language Selector -->
             <q-btn flat round icon="translate" class="q-mr-sm">
-                <q-menu v-model="languageMenu" anchor="bottom right" self="top right">
+                <q-menu v-model="languageMenu" anchor="bottom right" self="top right" :class="darkMode ? 'bg-dark' : 'bg-white'">
                     <q-list style="min-width: 100px">
                         <q-item v-for="lang in availableLocales" :key="lang" clickable v-close-popup
-                            @click="emit('change-locale', lang)">
+                            @click="emit('change-locale', lang)" :class="darkMode ? 'text-white' : ''">
                             <q-item-section>
-                                <q-item-label :class="{ 'text-weight-bold': locale === lang }">
+                                <q-item-label :class="{ 'text-weight-bold': locale === lang, 'text-primary': locale === lang && !darkMode, 'text-accent': locale === lang && darkMode }">
                                     {{ localeLabels[lang] }}
-                                    <q-icon v-if="locale === lang" name="check" size="xs" class="q-ml-xs" />
+                                    <q-icon v-if="locale === lang" name="check" size="xs" class="q-ml-xs" :color="darkMode ? 'accent' : 'primary'" />
                                 </q-item-label>
                             </q-item-section>
                         </q-item>
@@ -85,5 +85,23 @@ const getAppTitle = (currentLocale: string) => {
 
 .q-toolbar-title {
     font-size: 1.2rem;
+}
+
+/* ダークモード用のスタイル */
+:deep(.q-menu.bg-dark) {
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+:deep(.q-menu.bg-dark .q-item) {
+    color: white;
+}
+
+:deep(.q-menu.bg-dark .q-item:hover) {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+:deep(.text-accent) {
+    color: #00e5ff !important;
 }
 </style>
