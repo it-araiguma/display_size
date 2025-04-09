@@ -1,8 +1,5 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
 
 defineProps({
     darkMode: {
@@ -15,7 +12,7 @@ defineProps({
     },
     availableLocales: {
         type: Array as () => string[],
-        default: () => ['ja', 'en', 'zh-CN', 'ko']
+        default: () => ['ja', 'en', 'zh-CN', 'ko', 'fr', 'es']
     }
 });
 
@@ -25,10 +22,27 @@ const localeLabels = {
     'ja': '日本語',
     'en': 'English',
     'zh-CN': '中文',
-    'ko': '한국어'
+    'ko': '한국어',
+    'fr': 'Français',
+    'es': 'Español'
 };
 
 const languageMenu = ref(false);
+
+// アプリタイトルの翻訳
+const appTitles = {
+    'ja': '画面サイズチェッカー',
+    'en': 'Screen Size Checker',
+    'zh-CN': '屏幕尺寸检查器',
+    'ko': '화면 크기 체커',
+    'fr': 'Vérificateur de taille d\'écran',
+    'es': 'Comprobador de tamaño de pantalla'
+};
+
+// 現在の言語に基づいてアプリタイトルを取得
+const getAppTitle = (currentLocale: string) => {
+    return appTitles[currentLocale] || appTitles['en'];
+};
 </script>
 
 <template>
@@ -36,7 +50,7 @@ const languageMenu = ref(false);
         <q-toolbar>
             <q-toolbar-title class="row items-center">
                 <q-icon name="monitor" size="md" class="q-mr-sm" />
-                <span class="text-subtitle1 text-weight-bold">{{ t('app.title') }}</span>
+                <span class="text-subtitle1 text-weight-bold">{{ getAppTitle(locale) }}</span>
             </q-toolbar-title>
 
             <q-space />
@@ -50,10 +64,8 @@ const languageMenu = ref(false);
                             <q-item-section>
                                 <q-item-label :class="{ 'text-weight-bold': locale === lang }">
                                     {{ localeLabels[lang] }}
+                                    <q-icon v-if="locale === lang" name="check" size="xs" class="q-ml-xs" />
                                 </q-item-label>
-                            </q-item-section>
-                            <q-item-section avatar v-if="locale === lang">
-                                <q-icon name="check" color="primary" />
                             </q-item-section>
                         </q-item>
                     </q-list>
