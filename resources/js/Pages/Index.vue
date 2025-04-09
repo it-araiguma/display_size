@@ -138,7 +138,7 @@ const updateSeoMetaTags = () => {
         'ja': '画面サイズチェッカー | ディスプレイ画面の幅、縦、インチが計測できる便利ツール',
         'en': 'Screen Size Checker | A Handy Tool to Measure Display Width, Height, and Inches',
         'zh-CN': '屏幕尺寸检查器 | 测量显示屏宽度、高度和英寸的便捷工具',
-        'ko': '화면 크기 체커 | 디스플레이 화면의 너비, 높이, 인치를 측정할 수 있는 편리한 도구',
+        'ko': '화면 크기 체커 | 디스プ레이 화면의 너비, 높이, 인치를 측정할 수 있는 편리한 도구',
         'fr': 'Vérificateur de taille d\'écran | Un outil pratique pour mesurer la largeur, la hauteur et les pouces de votre écran',
         'es': 'Comprobador de tamaño de pantalla | Una herramienta útil para medir el ancho, alto y pulgadas de su pantalla'
     };
@@ -427,7 +427,7 @@ const initializeAds = () => {
             </div>
         </q-page-container>
 
-        <Footer :dark-mode="darkMode" />
+        <Footer :dark-mode="darkMode" :locale="locale" />
     </q-layout>
 </template>
 
