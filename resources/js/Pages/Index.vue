@@ -39,7 +39,8 @@ const translations = {
         'app.pixel_density': 'ピクセル密度',
         'app.ppi': 'PPI',
         'app.home': 'ホーム',
-        'app.privacy_policy': 'プライバシーポリシー'
+        'app.privacy_policy': 'プライバシーポリシー',
+        'app.estimate_note': '※ 96PPI基準の概算値(ブラウザでは実寸を取得できません)'
     },
     'en': {
         'app.screen_size': 'Screen Size',
@@ -54,7 +55,8 @@ const translations = {
         'app.pixel_density': 'Pixel Density',
         'app.ppi': 'PPI',
         'app.home': 'Home',
-        'app.privacy_policy': 'Privacy Policy'
+        'app.privacy_policy': 'Privacy Policy',
+        'app.estimate_note': '* Approx., based on 96 PPI (browsers can\'t read physical size)'
     },
     'zh-CN': {
         'app.screen_size': '屏幕尺寸',
@@ -69,7 +71,8 @@ const translations = {
         'app.pixel_density': '像素密度',
         'app.ppi': 'PPI',
         'app.home': '首页',
-        'app.privacy_policy': '隐私政策'
+        'app.privacy_policy': '隐私政策',
+        'app.estimate_note': '* 基于96 PPI的估算值(浏览器无法获取实际尺寸)'
     },
     'ko': {
         'app.screen_size': '화면 크기',
@@ -84,7 +87,8 @@ const translations = {
         'app.pixel_density': '픽셀 밀도',
         'app.ppi': 'PPI',
         'app.home': '홈',
-        'app.privacy_policy': '개인정보 보호정책'
+        'app.privacy_policy': '개인정보 보호정책',
+        'app.estimate_note': '* 96 PPI 기준 추정값 (브라우저는 실제 크기를 읽을 수 없음)'
     },
     'fr': {
         'app.screen_size': 'Taille d\'écran',
@@ -99,7 +103,8 @@ const translations = {
         'app.pixel_density': 'Densité de pixels',
         'app.ppi': 'PPP',
         'app.home': 'Accueil',
-        'app.privacy_policy': 'Politique de confidentialité'
+        'app.privacy_policy': 'Politique de confidentialité',
+        'app.estimate_note': '* Approx., basé sur 96 PPP (taille réelle non accessible au navigateur)'
     },
     'es': {
         'app.screen_size': 'Tamaño de pantalla',
@@ -114,7 +119,8 @@ const translations = {
         'app.pixel_density': 'Densidad de píxeles',
         'app.ppi': 'PPI',
         'app.home': 'Inicio',
-        'app.privacy_policy': 'Política de privacidad'
+        'app.privacy_policy': 'Política de privacidad',
+        'app.estimate_note': '* Aprox., basado en 96 PPI (el navegador no puede leer el tamaño real)'
     }
 };
 
@@ -248,22 +254,27 @@ const changeLocale = (newLocale: string) => {
 };
 
 const updateDisplaySizeValue = () => {
+    // CSS の 1in は仕様上 96px 固定。これは「CSS基準DPI」であり物理DPIではない。
     const dpiCalculator = document.getElementById('dpi-calculator');
-    if (dpiCalculator) {
-        dpi.value = dpiCalculator.offsetWidth;
-    }
+    const cssDpi = dpiCalculator && dpiCalculator.offsetWidth ? dpiCalculator.offsetWidth : 96;
+    dpi.value = cssDpi;
 
-    screenWidth.value = window.screen.width;
-    screenHeight.value = window.screen.height;
+    // window.screen.width/height は論理(CSS)ピクセル。Retina/4Kスケーリング/スマホ等
+    // (devicePixelRatio ≠ 1)では実際の解像度とズレるため devicePixelRatio を掛ける。
+    const dpr = window.devicePixelRatio || 1;
+    screenWidth.value = Math.round(window.screen.width * dpr);
+    screenHeight.value = Math.round(window.screen.height * dpr);
 
-    const inches = calculateScreenInches(screenWidth.value, screenHeight.value, dpi.value);
+    // デバイスのピクセル密度 = CSS基準DPI × devicePixelRatio
+    const devicePpi = cssDpi * dpr;
+    ppi.value = Math.round(devicePpi);
+
+    // 対角インチ = 物理ピクセル ÷ ピクセル密度。dpr は約分されるため実体は
+    // 「画面を約96PPIと仮定した推定値」になる(ブラウザでは真の物理サイズは取得不可)。
+    const inches = calculateScreenInches(screenWidth.value, screenHeight.value, devicePpi);
     screenInches.value = inches;
     roundedInches.value = Math.round(inches);
     floorInches.value = truncateToDecimal(inches, 2);
-
-    // Calculate PPI (Pixels Per Inch)
-    const diagonalResolution = Math.sqrt(Math.pow(screenWidth.value, 2) + Math.pow(screenHeight.value, 2));
-    ppi.value = Math.round(diagonalResolution / inches);
 };
 
 const calculateScreenInches = (width: number, height: number, dpi: number) => {
@@ -319,6 +330,7 @@ const initializeAds = () => {
                             <div class="text-center q-py-md">
                                 <div class="text-h2 text-weight-bold text-primary">{{ roundedInches }}"</div>
                                 <div class="text-subtitle1 text-grey-7">{{ floorInches }} {{ getText('app.inches') }}</div>
+                                <div class="text-caption text-grey-6 q-mt-xs">{{ getText('app.estimate_note') }}</div>
                             </div>
 
                             <q-list>
