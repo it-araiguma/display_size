@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
@@ -18,7 +19,9 @@ export default defineConfig({
             },
         }),
         quasar({
-            sassVariables: 'resources/css/quasar-variables.sass'
+            // vite 7 は sass modern API がデフォルトのため、ルート相対パスでは
+            // 解決できない。絶対パスで明示的に指定する。
+            sassVariables: fileURLToPath(new URL('./resources/css/quasar-variables.sass', import.meta.url))
         }),
     ],
     // 本番ビルドの最適化設定
