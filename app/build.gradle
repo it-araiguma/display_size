@@ -51,13 +51,14 @@ def twaManifest = [
 ]
 
 android {
-    compileSdkVersion 34
+    namespace 'com.it_araiguma.display.twa'
+    compileSdk 36
     defaultConfig {
         applicationId "com.it_araiguma.display.twa"
-        minSdkVersion 19
-        targetSdkVersion 34
-        versionCode 1
-        versionName "1"
+        minSdk 21
+        targetSdk 36
+        versionCode 2
+        versionName "2"
 
         // The name for the application
         resValue "string", "appName", twaManifest.name
@@ -145,16 +146,32 @@ android {
         resValue "bool", "enableSiteSettingsShortcut", twaManifest.enableSiteSettingsShortcut
         resValue "string", "orientation", twaManifest.orientation
     }
+    signingConfigs {
+        release {
+            def keystorePath = System.getenv("KEYSTORE_FILE") ?: "$rootDir/android.keystore"
+            def keystoreFile = file(keystorePath)
+            if (keystoreFile.exists()) {
+                storeFile keystoreFile
+                storePassword System.getenv("KEYSTORE_PASSWORD") ?: "displaysize2026"
+                keyAlias System.getenv("KEY_ALIAS") ?: (twaManifest.signingKey?.alias ?: "android")
+                keyPassword System.getenv("KEY_PASSWORD") ?: System.getenv("KEYSTORE_PASSWORD") ?: "displaysize2026"
+            }
+        }
+    }
     buildTypes {
         release {
             minifyEnabled true
+            def keystorePath = System.getenv("KEYSTORE_FILE") ?: "$rootDir/android.keystore"
+            if (file(keystorePath).exists()) {
+                signingConfig signingConfigs.release
+            }
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
-    lintOptions {
+    lint {
         checkReleaseBuilds false
     }
 }
