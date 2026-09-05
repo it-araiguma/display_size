@@ -18,11 +18,7 @@ const ppi = ref(0);
 const locale = ref('ja');
 
 const resolution = computed(() => `${screenWidth.value} × ${screenHeight.value}`);
-const aspectRatio = computed(() => {
-    const gcd = (a: number, b: number): number => b ? gcd(b, a % b) : a;
-    const divisor = gcd(screenWidth.value, screenHeight.value);
-    return `${screenWidth.value / divisor}:${screenHeight.value / divisor}`;
-});
+const aspectRatio = computed(() => calculateAspectRatio(screenWidth.value, screenHeight.value));
 
 // i18nを使わない直接的な翻訳オブジェクト
 const translations = {
@@ -40,7 +36,7 @@ const translations = {
         'app.ppi': 'PPI',
         'app.home': 'ホーム',
         'app.privacy_policy': 'プライバシーポリシー',
-        'app.estimate_note': '※ 96PPI基準の概算値(ブラウザでは実寸を取得できません)'
+        'app.estimate_note': '※ デバイス情報に基づく推定値です(ブラウザでは実寸を取得できません)'
     },
     'en': {
         'app.screen_size': 'Screen Size',
@@ -56,7 +52,7 @@ const translations = {
         'app.ppi': 'PPI',
         'app.home': 'Home',
         'app.privacy_policy': 'Privacy Policy',
-        'app.estimate_note': '* Approx., based on 96 PPI (browsers can\'t read physical size)'
+        'app.estimate_note': '* Estimated based on device profile (browsers can\'t read physical size directly)'
     },
     'zh-CN': {
         'app.screen_size': '屏幕尺寸',
@@ -72,7 +68,7 @@ const translations = {
         'app.ppi': 'PPI',
         'app.home': '首页',
         'app.privacy_policy': '隐私政策',
-        'app.estimate_note': '* 基于96 PPI的估算值(浏览器无法获取实际尺寸)'
+        'app.estimate_note': '* 基于设备信息的估算值(浏览器无法直接获取实际尺寸)'
     },
     'ko': {
         'app.screen_size': '화면 크기',
@@ -88,7 +84,7 @@ const translations = {
         'app.ppi': 'PPI',
         'app.home': '홈',
         'app.privacy_policy': '개인정보 보호정책',
-        'app.estimate_note': '* 96 PPI 기준 추정값 (브라우저는 실제 크기를 읽을 수 없음)'
+        'app.estimate_note': '* 장치 정보 기반 추정값(브라우저는 실제 크기를 직접 읽을 수 없음)'
     },
     'fr': {
         'app.screen_size': 'Taille d\'écran',
@@ -104,7 +100,7 @@ const translations = {
         'app.ppi': 'PPP',
         'app.home': 'Accueil',
         'app.privacy_policy': 'Politique de confidentialité',
-        'app.estimate_note': '* Approx., basé sur 96 PPP (taille réelle non accessible au navigateur)'
+        'app.estimate_note': '* Estimé selon le profil de l\'appareil (taille réelle non accessible au navigateur)'
     },
     'es': {
         'app.screen_size': 'Tamaño de pantalla',
@@ -120,7 +116,7 @@ const translations = {
         'app.ppi': 'PPI',
         'app.home': 'Inicio',
         'app.privacy_policy': 'Política de privacidad',
-        'app.estimate_note': '* Aprox., basado en 96 PPI (el navegador no puede leer el tamaño real)'
+        'app.estimate_note': '* Estimado según el perfil del dispositivo (el navegador no puede leer el tamaño real directamente)'
     }
 };
 
@@ -253,41 +249,167 @@ const changeLocale = (newLocale: string) => {
     }
 };
 
+interface DeviceProfile {
+    baseLogicalPpi: number;
+    deviceType: 'mobile' | 'tablet' | 'mac' | 'desktop';
+}
+
+const detectDeviceProfile = (): DeviceProfile => {
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+        return { baseLogicalPpi: 96, deviceType: 'desktop' };
+    }
+
+    const ua = navigator.userAgent || '';
+    const dpr = window.devicePixelRatio || 1;
+    const maxTouch = navigator.maxTouchPoints || 0;
+
+    const screenW = window.screen.width || 0;
+    const screenH = window.screen.height || 0;
+    const shortSide = Math.min(screenW, screenH);
+    const longSide = Math.max(screenW, screenH);
+
+    // iPad判定 (iPadOS 13+ は Macintosh かつ maxTouchPoints > 1)
+    const isIPad = /iPad/i.test(ua) || (/Macintosh/i.test(ua) && maxTouch > 1);
+    const isIPhone = /iPhone|iPod/i.test(ua);
+    const isAndroid = /Android/i.test(ua);
+    const navAny = navigator as any;
+    const isMobileUaData = Boolean(navAny.userAgentData?.mobile);
+    const isAndroidMobile = isAndroid && (/Mobile/i.test(ua) || isMobileUaData);
+    const isAndroidTablet = isAndroid && !isAndroidMobile;
+    const isGenericMobile = isMobileUaData || (maxTouch > 0 && shortSide < 500);
+
+    // 1. スマートフォン (iOS: 163 ppi, Android: 160 dpi)
+    if (isIPhone) {
+        return { baseLogicalPpi: 163, deviceType: 'mobile' };
+    }
+    if (isAndroidMobile || (isGenericMobile && !isIPad && !isAndroidTablet)) {
+        return { baseLogicalPpi: 160, deviceType: 'mobile' };
+    }
+
+    // 2. タブレット (iPad: 132 ppi / mini: 163 ppi, Android Tablet: 160 dpi)
+    if (isIPad) {
+        const isIPadMini = shortSide <= 768 && longSide <= 1024 && dpr === 2;
+        return { baseLogicalPpi: isIPadMini ? 163 : 132, deviceType: 'tablet' };
+    }
+    if (isAndroidTablet || (maxTouch > 0 && shortSide >= 500 && shortSide <= 900)) {
+        return { baseLogicalPpi: 160, deviceType: 'tablet' };
+    }
+
+    // 3. Mac (MacBook Retina は約 127 ppi)
+    const isMac = /Macintosh/i.test(ua) && maxTouch <= 1;
+    if (isMac) {
+        const diagCss = Math.sqrt(screenW ** 2 + screenH ** 2);
+        if (dpr >= 2 && diagCss >= 1400 && diagCss <= 2300) {
+            return { baseLogicalPpi: 127, deviceType: 'mac' };
+        }
+        return { baseLogicalPpi: 96, deviceType: 'desktop' };
+    }
+
+    // 4. 一般デスクトップ / ノートPC (Windows, Linux: 基準 96 ppi)
+    return { baseLogicalPpi: 96, deviceType: 'desktop' };
+};
+
+const COMMON_DIMENSIONS = [
+    720, 1080, 1170, 1179, 1200, 1280, 1290, 1440, 1600, 1620,
+    1644, 1668, 1920, 2048, 2160, 2256, 2340, 2360, 2388, 2400,
+    2460, 2520, 2532, 2556, 2560, 2732, 2778, 2796, 2880, 3000,
+    3024, 3200, 3440, 3840, 4480, 5120
+];
+
+const snapToCommonDimension = (val: number, tolerance = 3): number => {
+    for (const common of COMMON_DIMENSIONS) {
+        if (Math.abs(val - common) <= tolerance) {
+            return common;
+        }
+    }
+    return val;
+};
+
+interface AspectRatioDefinition {
+    ratio: number;
+    wideName: string;
+    tallName: string;
+    tolerance: number;
+}
+
+const STANDARD_ASPECT_RATIOS: AspectRatioDefinition[] = [
+    { ratio: 1.0, wideName: '1:1', tallName: '1:1', tolerance: 0.02 },
+    { ratio: 5 / 4, wideName: '5:4', tallName: '4:5', tolerance: 0.02 },
+    { ratio: 4 / 3, wideName: '4:3', tallName: '3:4', tolerance: 0.025 },
+    { ratio: 3 / 2, wideName: '3:2', tallName: '2:3', tolerance: 0.025 },
+    // 16:10 (1.6) - MacBookノッチ付きモデル (3024x1964 ≒ 1.54, 3456x2234 ≒ 1.547) を含む
+    { ratio: 16 / 10, wideName: '16:10', tallName: '10:16', tolerance: 0.065 },
+    { ratio: 16 / 9, wideName: '16:9', tallName: '9:16', tolerance: 0.03 }, // 1366x768 (1.7786) を含む
+    { ratio: 18 / 9, wideName: '18:9', tallName: '9:18', tolerance: 0.025 },
+    { ratio: 19.5 / 9, wideName: '19.5:9', tallName: '9:19.5', tolerance: 0.035 }, // iPhone 13-16, Galaxy
+    { ratio: 20 / 9, wideName: '20:9', tallName: '9:20', tolerance: 0.03 },
+    { ratio: 20.5 / 9, wideName: '20.5:9', tallName: '9:20.5', tolerance: 0.03 },
+    // 21:9 - ウルトラワイド (2560x1080 ≒ 2.37, 3440x1440 ≒ 2.389, 1080x2520 ≒ 2.333) を含む
+    { ratio: 2.37, wideName: '21:9', tallName: '9:21', tolerance: 0.07 },
+    { ratio: 32 / 9, wideName: '32:9', tallName: '9:32', tolerance: 0.05 },
+];
+
+const calculateAspectRatio = (width: number, height: number): string => {
+    if (width <= 0 || height <= 0) return '0:0';
+
+    const isLandscape = width >= height;
+    const longSide = Math.max(width, height);
+    const shortSide = Math.min(width, height);
+    const currentRatio = longSide / shortSide;
+
+    for (const standard of STANDARD_ASPECT_RATIOS) {
+        if (Math.abs(currentRatio - standard.ratio) <= standard.tolerance) {
+            return isLandscape ? standard.wideName : standard.tallName;
+        }
+    }
+
+    const gcd = (a: number, b: number): number => b ? gcd(b, a % b) : a;
+    const divisor = gcd(width, height);
+    const reducedW = width / divisor;
+    const reducedH = height / divisor;
+
+    if (reducedW > 50 || reducedH > 50) {
+        return `${(width / height).toFixed(2)}:1`;
+    }
+
+    return `${reducedW}:${reducedH}`;
+};
+
 const updateDisplaySizeValue = () => {
-    // CSS の 1in は仕様上 96px 固定。これは「CSS基準DPI」であり物理DPIではない。
+    // CSS の 1in は仕様上 96px 固定 (CSS基準DPI)
     const dpiCalculator = document.getElementById('dpi-calculator');
     const cssDpi = dpiCalculator && dpiCalculator.offsetWidth ? dpiCalculator.offsetWidth : 96;
     dpi.value = cssDpi;
 
-    // window.screen.width/height は論理(CSS)ピクセル。Retina/4Kスケーリング/スマホ等
-    // (devicePixelRatio ≠ 1)では実際の解像度とズレるため devicePixelRatio を掛ける。
     const dpr = window.devicePixelRatio || 1;
-    screenWidth.value = Math.round(window.screen.width * dpr);
-    screenHeight.value = Math.round(window.screen.height * dpr);
+    const rawWidth = Math.round(window.screen.width * dpr);
+    const rawHeight = Math.round(window.screen.height * dpr);
 
-    // デバイスのピクセル密度 = CSS基準DPI × devicePixelRatio
-    const devicePpi = cssDpi * dpr;
-    ppi.value = Math.round(devicePpi);
+    // 一般的な解像度へのスナップ（丸め誤差の修正）
+    screenWidth.value = snapToCommonDimension(rawWidth);
+    screenHeight.value = snapToCommonDimension(rawHeight);
 
-    // 対角インチ = 物理ピクセル ÷ ピクセル密度。dpr は約分されるため実体は
-    // 「画面を約96PPIと仮定した推定値」になる(ブラウザでは真の物理サイズは取得不可)。
-    const inches = calculateScreenInches(screenWidth.value, screenHeight.value, devicePpi);
+    // デバイス種別の判定と論理密度の取得
+    const profile = detectDeviceProfile();
+    const baseLogicalPpi = profile.baseLogicalPpi;
+
+    // 対角インチ = CSS論理ピクセルの対角長 ÷ デバイス基準の論理ピクセル密度
+    const diagLogicalPx = Math.sqrt(window.screen.width ** 2 + window.screen.height ** 2);
+    const inches = diagLogicalPx / baseLogicalPpi;
+
     screenInches.value = inches;
     roundedInches.value = Math.round(inches);
     floorInches.value = truncateToDecimal(inches, 2);
-};
 
-const calculateScreenInches = (width: number, height: number, dpi: number) => {
-    const widthInches = width / dpi;
-    const heightInches = height / dpi;
-
-    return Math.sqrt(widthInches ** 2 + heightInches ** 2);
+    // 物理ピクセル密度 (PPI) = 物理対角ピクセル ÷ 対角インチ
+    const diagPhysicalPx = Math.sqrt(screenWidth.value ** 2 + screenHeight.value ** 2);
+    ppi.value = inches > 0 ? Math.round(diagPhysicalPx / inches) : Math.round(cssDpi * dpr);
 };
 
 const truncateToDecimal = (value: number, decimals: number) => {
     const factor = Math.pow(10, decimals);
     return Math.floor(value * factor) / factor;
-}
+};
 
 // 広告を初期化する関数
 const initializeAds = () => {
